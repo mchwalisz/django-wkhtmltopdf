@@ -10,6 +10,7 @@ from django.views.generic import TemplateView
 
 from .utils import (content_disposition_filename, make_absolute_paths,
     wkhtmltopdf)
+from os import remove
 
 
 class PDFResponse(HttpResponse):
@@ -100,7 +101,9 @@ class PDFTemplateResponse(TemplateResponse, PDFResponse):
             cmd_options['header_html'] = header_filename
         if footer_filename is not None:
             cmd_options['footer_html'] = footer_filename
-        return wkhtmltopdf(pages=[filename], **cmd_options)
+        retval = wkhtmltopdf(pages=[filename], **cmd_options)
+        remove(filename)
+        return retval
 
     @property
     def rendered_content(self):
