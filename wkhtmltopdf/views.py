@@ -102,7 +102,8 @@ class PDFTemplateResponse(TemplateResponse, PDFResponse):
         if footer_filename is not None:
             cmd_options['footer_html'] = footer_filename
         retval = wkhtmltopdf(pages=[filename], **cmd_options)
-        remove(filename)
+        # DIRTFIX: Debug mode will not delete the temp files
+        # remove(filename)
         return retval
 
     @property
@@ -125,7 +126,6 @@ class PDFTemplateResponse(TemplateResponse, PDFResponse):
                 prefix='wkhtmltopdf', suffix='.html',
                 delete=(not debug)
             )
-
             if self.header_template:
                 header_file = self.render_to_temporary_file(
                     template_name=self.header_template,
